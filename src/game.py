@@ -1,10 +1,9 @@
-import argparse
 from time import sleep
 import random
 from faker import Faker
 
 from config import BARRELS, ROBOT_NUMBERS, CARDS_PER_PLAYER
-from helpers import blame_numbers, clear_terminal
+from helpers import blame_numbers, clear_terminal, create_parser
 
 fake = Faker()
 
@@ -217,13 +216,6 @@ class Pouch:
         return len(self._barrels) == 0
 
 
-def create_parser():
-    parser = argparse.ArgumentParser(
-        description='Lotto game in console'
-    )
-    parser.add_argument('players', type=int, choices=range(1, 8), default=2, help='How many players.')
-    return parser.parse_args()
-
-
 if __name__ == '__main__':
-    Game.start()
+    args = create_parser()
+    Game.start(robot_numbers=args.opponents)
