@@ -2,13 +2,17 @@ from time import sleep
 import random
 from faker import Faker
 
-from config import BARRELS, ROBOT_NUMBERS, CARDS_PER_PLAYER
+from config import BARRELS_NUMBER, CARDS_PER_PLAYER
 from helpers import blame_numbers, clear_terminal, create_parser
 
 fake = Faker()
+barrels = range(1, BARRELS_NUMBER + 1)
 
 
 class Game:
+
+    if BARRELS_NUMBER < 15:
+        raise ValueError('The BARRELS_NUMBER in config.py should 15 or more')
 
     @classmethod
     def start(cls, robot_numbers):
@@ -154,9 +158,9 @@ class Card:
     cards_in_game = set()
 
     def __init__(self):
-        self._numbers = random.sample(BARRELS, 15)
+        self._numbers = random.sample(barrels, 15)
         while not Card.add_cart_to_game(self):
-            self._numbers = random.sample(BARRELS, 15)
+            self._numbers = random.sample(barrels, 15)
 
         self._numbers = blame_numbers(self._numbers)
 
@@ -202,7 +206,7 @@ class Pouch:
     """Class fot pouch with barrels"""
 
     def __init__(self):
-        self._barrels = list(BARRELS)
+        self._barrels = list(barrels)
 
     def __str__(self):
         return self._barrels
