@@ -1,6 +1,7 @@
 from subprocess import call
 from os import name
 import random
+import argparse
 
 
 def clear_terminal():
@@ -17,3 +18,11 @@ def blame_numbers(numbers):
         random.shuffle(line)
 
     return [item for line in lines for item in line]
+
+
+def create_parser():
+    parser = argparse.ArgumentParser(
+        description='Lotto game in console'
+    )
+    parser.add_argument('opponents', type=int, choices=range(1, 8), default=1, help='How many opponents.')
+    return parser.parse_args()
