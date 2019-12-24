@@ -125,6 +125,9 @@ class Card:
         ]
         return '\n'.join(str_lines)
 
+    def __hash__(self):
+        return hash(tuple(sorted(self._numbers)))
+
     @classmethod
     def get_unique_number_sequence(cls):
         number_sequence = random.sample(barrels, 15)
