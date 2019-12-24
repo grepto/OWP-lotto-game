@@ -10,14 +10,13 @@ barrels = range(1, BARRELS_NUMBER + 1)
 
 
 class Game:
-
     if BARRELS_NUMBER < 15:
         raise ValueError('The BARRELS_NUMBER in config.py should 15 or more')
 
     @classmethod
     def start(cls, robot_numbers):
         clear_terminal()
-        print('Welcome to the lotto game')
+        print('Welcome to the lotto game')  # noqa
         human_player_name = input('What is your name? ')
 
         Player.add_player_to_game(HumanPlayer(human_player_name))
@@ -30,7 +29,7 @@ class Game:
         while not pouch.is_empty():
             barrel = pouch.get_barrel()
             clear_terminal()
-            print(f'Next barrel is {barrel}')
+            print(f'Next barrel is {barrel}')  # noqa
 
             round_players = [player for player in Player.players if not player.is_looser]
             for player in round_players:
@@ -39,12 +38,12 @@ class Game:
                 player.check_barrel(barrel)
 
                 if player.is_looser:
-                    print('Sorry, you loose. Try again next time')
+                    print('Sorry, you loose. Try again next time')  # noqa
                     sleep(1)
                     break
 
                 if player.is_winner:
-                    print('Congradulationts! You win!')
+                    print('Congradulationts! You win!')  # noqa
                     sleep(1)
                     break
 
@@ -53,7 +52,7 @@ class Game:
             winner = Player.get_winner()
             if winner:
                 clear_terminal()
-                print(f'The winner is {winner.name}')
+                print(f'The winner is {winner.name}')  # noqa
                 winner.print_cards()
 
                 break
