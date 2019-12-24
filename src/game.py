@@ -1,5 +1,6 @@
-from time import sleep
 import random
+from time import sleep
+
 from faker import Faker
 
 from config import BARRELS_NUMBER, CARDS_PER_PLAYER
