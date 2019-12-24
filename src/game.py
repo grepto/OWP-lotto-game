@@ -3,36 +3,16 @@ from time import sleep
 
 from faker import Faker
 
-from config import BARRELS_NUMBER, CARDS_PER_PLAYER
-from helpers import blame_numbers, clear_terminal, create_parser, hash_number_sequence
-
-if BARRELS_NUMBER < 15:
-    raise ValueError('The BARRELS_NUMBER in config.py should 15 or more')
+from helpers import blame_numbers, clear_terminal, create_parser
 
 fake = Faker()
-barrels = range(1, BARRELS_NUMBER + 1)
 
 
 class Player:
-    players = []
 
     def __init__(self):
-        self.cards = [Card() for _ in range(CARDS_PER_PLAYER)]
         self.is_looser = 0
-
-    @classmethod
-    def add_player_to_game(cls, player):
-        cls.players.append(player)
-
-    @classmethod
-    def get_winner(cls):
-        not_loosers = [player for player in cls.players if not player.is_looser]
-        winners = [player for player in cls.players if player.is_winner]
-
-        if len(not_loosers) == 1:
-            return not_loosers[0]
-        if winners:
-            return winners[0]
+        self.cards = []
 
     @property
     def is_winner(self):
@@ -82,7 +62,7 @@ class RobotPlayer(Player):
         super().__init__()
         self.name = f'Robot {fake.first_name()}'
 
-    def check_barrel(self, barrel: int) -> bool:
+    def get_answer(self, barrel: int) -> bool:
         guess = self.check_number(barrel)
         print(f'{self.name}, do you have number {barrel} in you cards? (y/n)')  # noqa: T001
         sleep(0.3)
@@ -96,25 +76,22 @@ class HumanPlayer(Player):
         super().__init__()
         self.name = name
 
-    def check_barrel(self, barrel: int) -> bool:
+    def get_answer(self, barrel: int) -> bool:
         guess_str = input(f'{self.name}, do you have number {barrel} in you cards? (y/n) ').lower()
         if guess_str not in ('y', 'n'):
             print(  # noqa: T001
                 f'{guess_str} is incorrect answer. You should type only "y" or "n". Lets try again')
-            self.check_barrel(barrel)
+            self.get_answer(barrel)
         else:
-            guess = True if guess_str == 'y' else False
+            guess = guess_str == 'y'
             super().check_barrel(barrel, guess)
 
 
 class Card:
     """Lotto card class"""
 
-    number_sequences_in_game = set()
-
-    def __init__(self):
-        self._numbers = Card.get_unique_number_sequence()
-        Card.add_card_to_game(self)
+    def __init__(self, barrels):
+        self._numbers = random.sample(barrels, 15)
         self._numbers = blame_numbers(self._numbers)
 
     def __str__(self):
@@ -126,19 +103,7 @@ class Card:
         return '\n'.join(str_lines)
 
     def __hash__(self):
-        return hash(tuple(sorted(self._numbers)))
-
-    @classmethod
-    def get_unique_number_sequence(cls):
-        number_sequence = random.sample(barrels, 15)
-        while hash_number_sequence(number_sequence) in cls.number_sequences_in_game:
-            number_sequence = random.sample(barrels, 15)
-
-        return number_sequence
-
-    @classmethod
-    def add_card_to_game(cls, card):
-        cls.number_sequences_in_game.add(hash_number_sequence(card.numbers))
+        return hash(tuple(sorted(self.numbers)))
 
     @property
     def numbers(self):
@@ -170,35 +135,76 @@ class Pouch:
     def __str__(self):
         return ' '.join(map(lambda x: str(x), self._barrels))
 
-    def get_barrel(self):
+    @property
+    def barrels(self):
+        return self._barrels
+
+    def get_new_barrel(self):
         return next(self._pouch_generator)
 
 
 class Game:
 
-    @classmethod
-    def start(cls, robot_numbers):
+    def __init__(self, barrels_number, cards_per_player, robots_number):
+
+        if barrels_number not in range(15, 91):
+            raise ValueError('The barrels number in should be between 15 and 90')
+
+        self.cards = set()
+        self.players = []
+        self.pouch = Pouch(range(1, barrels_number + 1))
+        self.cards_per_player = cards_per_player
+        self.robots_number = robots_number
+
+    def add_card(self):
+        card = Card(self.pouch.barrels)
+        while hash(card) in self.cards:
+            card = Card(self.pouch.barrels)
+
+        return card
+
+    def add_player(self, name=None):
+        player = HumanPlayer(name) if name else RobotPlayer()
+        self.players.append(player)
+
+        return player
+
+    def deal_cards_to_players(self):
+        for player in self.players:
+            player.cards = [self.add_card() for _ in range(self.cards_per_player)]
+
+    def get_winner(self):
+        not_loosers = [player for player in self.players if not player.is_looser]
+        winners = [player for player in self.players if player.is_winner]
+
+        if len(not_loosers) == 1:
+            return not_loosers[0]
+        if winners:
+            return winners[0]
+
+    def start(self):
         clear_terminal()
         print('Welcome to the lotto game')  # noqa: T001
+
         human_player_name = input('What is your name? ')
+        self.add_player(human_player_name)
 
-        Player.add_player_to_game(HumanPlayer(human_player_name))
+        for _ in range(self.robots_number):
+            self.add_player()
 
-        for _ in range(robot_numbers):
-            Player.add_player_to_game(RobotPlayer())
-
-        pouch = Pouch(barrels=barrels)
+        self.deal_cards_to_players()
 
         while True:
-            barrel = pouch.get_barrel()
+            barrel = self.pouch.get_new_barrel()
             clear_terminal()
             print(f'Next barrel is {barrel}')  # noqa: T001
+            sleep(0.5)
 
-            round_players = [player for player in Player.players if not player.is_looser]
+            round_players = [player for player in self.players if not player.is_looser]
             for player in round_players:
                 clear_terminal()
                 player.print_cards()
-                player.check_barrel(barrel)
+                player.get_answer(barrel)
 
                 if player.is_looser:
                     print('Sorry, you loose. Try again next time')  # noqa: T001
@@ -212,7 +218,7 @@ class Game:
 
                 _ = input('\nPress Enter for the next step')
 
-            winner = Player.get_winner()
+            winner = self.get_winner()
             if winner:
                 clear_terminal()
                 print(f'The winner is {winner.name}')  # noqa: T001
@@ -223,4 +229,14 @@ class Game:
 
 if __name__ == '__main__':
     args = create_parser()
-    Game.start(robot_numbers=args.opponents)
+    game = Game(
+        barrels_number=args.barrels_number,
+        cards_per_player=args.cards_per_player,
+        robots_number=args.robots_number
+    )
+    # game = Game(
+    #     barrels_number=90,
+    #     cards_per_player=1,
+    #     robots_number=1
+    # )
+    game.start()

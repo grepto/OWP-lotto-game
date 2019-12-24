@@ -24,10 +24,11 @@ def create_parser():
     parser = argparse.ArgumentParser(
         description='Lotto game in console'
     )
-    parser.add_argument('opponents', type=int, choices=range(1, 8), default=1,
+
+    parser.add_argument('barrels_number', type=int, choices=range(15, 91), default=1,
+                        help='How many barrels in pouch.')
+    parser.add_argument('cards_per_player', type=int, choices=range(1, 3), default=1,
+                        help='How many cards per player.')
+    parser.add_argument('robots_number', type=int, choices=range(1, 8), default=1,
                         help='How many opponents.')
     return parser.parse_args()
-
-
-def hash_number_sequence(number_sequence):
-    return hash(tuple(sorted(number_sequence)))
