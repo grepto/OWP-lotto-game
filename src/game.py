@@ -114,7 +114,7 @@ class Card:
 
     def __init__(self):
         self._numbers = random.sample(barrels, 15)
-        while not Card.add_cart_to_game(self):
+        while not Card.add_card_to_game(self):
             self._numbers = random.sample(barrels, 15)
 
         self._numbers = blame_numbers(self._numbers)
@@ -131,7 +131,7 @@ class Card:
         return hash(tuple(sorted(self._numbers)))
 
     @classmethod
-    def add_cart_to_game(cls, card):
+    def add_card_to_game(cls, card):
         if hash(card) not in cls.cards_in_game:
             cls.cards_in_game.add(hash(card))
             return True
