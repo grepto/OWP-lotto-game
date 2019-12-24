@@ -162,14 +162,14 @@ class Pouch:
 
     def __init__(self, barrels):
         self._barrels = list(barrels)
+        random.shuffle(self._barrels)
+        self._pouch_generator=(barrel for barrel in self._barrels)
 
     def __str__(self):
         return ' '.join(map(lambda x: str(x), self._barrels))
 
     def get_barrel(self):
-        barrel = random.choice(self._barrels)
-        self._barrels.remove(barrel)
-        return barrel
+        return next(self._pouch_generator)
 
     def is_empty(self):
         return len(self._barrels) == 0
