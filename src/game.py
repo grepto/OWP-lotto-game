@@ -164,7 +164,7 @@ class Pouch:
         self._barrels = list(barrels)
 
     def __str__(self):
-        return self._barrels
+        return ' '.join(map(lambda x: str(x), self._barrels))
 
     def get_barrel(self):
         barrel = random.choice(self._barrels)
