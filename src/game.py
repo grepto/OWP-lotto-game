@@ -110,14 +110,11 @@ class HumanPlayer(Player):
 class Card:
     """Lotto card class"""
 
-    cards_in_game = set()
     number_sequences_in_game = set()
 
     def __init__(self):
         self._numbers = Card.get_unique_number_sequence()
-        while not Card.add_card_to_game(self):
-            self._numbers = random.sample(barrels, 15)
-
+        Card.add_card_to_game(self)
         self._numbers = blame_numbers(self._numbers)
 
     def __str__(self):
@@ -139,14 +136,9 @@ class Card:
 
         return number_sequence
 
-
     @classmethod
     def add_card_to_game(cls, card):
-        if hash(card) not in cls.cards_in_game:
-            cls.cards_in_game.add(hash(card))
-            return True
-        else:
-            return False
+        cls.number_sequences_in_game.add(hash_number_sequence(card.numbers))
 
     @property
     def numbers(self):
