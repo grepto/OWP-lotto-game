@@ -18,7 +18,7 @@ class Game:
     @classmethod
     def start(cls, robot_numbers):
         clear_terminal()
-        print('Welcome to the lotto game')  # noqa
+        print('Welcome to the lotto game')  # noqa: T001
         human_player_name = input('What is your name? ')
 
         Player.add_player_to_game(HumanPlayer(human_player_name))
@@ -31,7 +31,7 @@ class Game:
         while not pouch.is_empty():
             barrel = pouch.get_barrel()
             clear_terminal()
-            print(f'Next barrel is {barrel}')  # noqa
+            print(f'Next barrel is {barrel}')  # noqa: T001
 
             round_players = [player for player in Player.players if not player.is_looser]
             for player in round_players:
@@ -40,12 +40,12 @@ class Game:
                 player.check_barrel(barrel)
 
                 if player.is_looser:
-                    print('Sorry, you loose. Try again next time')  # noqa
+                    print('Sorry, you loose. Try again next time')  # noqa: T001
                     sleep(1)
                     break
 
                 if player.is_winner:
-                    print('Congradulationts! You win!')  # noqa
+                    print('Congradulationts! You win!')  # noqa: T001
                     sleep(1)
                     break
 
@@ -54,7 +54,7 @@ class Game:
             winner = Player.get_winner()
             if winner:
                 clear_terminal()
-                print(f'The winner is {winner.name}')  # noqa
+                print(f'The winner is {winner.name}')  # noqa: T001
                 winner.print_cards()
 
                 break
@@ -100,14 +100,14 @@ class Player:
         actually = self.check_number(barrel)
 
         if guess == actually and actually:
-            print(f'Right! You have number {barrel} and now its marked!')
+            print(f'Right! You have number {barrel} and now its marked!')  # noqa: T001
             self.mark_number(barrel)
         elif guess == actually and not actually:
-            print(f'Right! You dont have number {barrel}')
+            print(f'Right! You dont have number {barrel}')  # noqa: T001
         elif guess != actually and actually:
-            print(f'Wrong! Actually, you have number {barrel}.')
+            print(f'Wrong! Actually, you have number {barrel}.')  # noqa: T001
         else:
-            print(f'Wrong! Actually, you dont have number {barrel}.')
+            print(f'Wrong! Actually, you dont have number {barrel}.')  # noqa: T001
 
         if guess != actually:
             self.is_looser = 1
@@ -120,7 +120,7 @@ class Player:
 
     def print_cards(self):
         for card in self.cards:
-            print(card, sep='\n', end='\n')
+            print(card, sep='\n', end='\n')  # noqa: T001
 
 
 class RobotPlayer(Player):
@@ -131,9 +131,9 @@ class RobotPlayer(Player):
 
     def check_barrel(self, barrel: int) -> bool:
         guess = self.check_number(barrel)
-        print(f'{self.name}, do you have number {barrel} in you cards? (y/n)')
+        print(f'{self.name}, do you have number {barrel} in you cards? (y/n)')  # noqa: T001
         sleep(0.3)
-        print('y' if guess else 'n')
+        print('y' if guess else 'n')  # noqa: T001
         super().check_barrel(barrel, guess)
 
 
@@ -146,7 +146,7 @@ class HumanPlayer(Player):
     def check_barrel(self, barrel: int) -> bool:
         guess_str = input(f'{self.name}, do you have number {barrel} in you cards? (y/n) ').lower()
         if guess_str not in ('y', 'n'):
-            print(f'{guess_str} is incorrect answer. You should type only "y" or "n". Lets try again')
+            print(f'{guess_str} is incorrect answer. You should type only "y" or "n". Lets try again')  # noqa: T001
             self.check_barrel(barrel)
         else:
             guess = True if guess_str == 'y' else False
