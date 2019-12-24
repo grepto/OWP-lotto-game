@@ -123,7 +123,7 @@ class Card:
             ' '.join(map(str, self._numbers[9:18])),
             ' '.join(map(str, self._numbers[18:])),
         ]
-        return '\n'.join(map(str, str_lines))
+        return '\n'.join(str_lines)
 
     def __hash__(self):
         return hash(tuple(sorted(self._numbers)))
