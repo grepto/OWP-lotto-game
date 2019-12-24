@@ -160,7 +160,7 @@ class Card:
 class Pouch:
     """Class fot pouch with barrels"""
 
-    def __init__(self):
+    def __init__(self, barrels):
         self._barrels = list(barrels)
 
     def __str__(self):
@@ -188,7 +188,7 @@ class Game:
         for _ in range(robot_numbers):
             Player.add_player_to_game(RobotPlayer())
 
-        pouch = Pouch()
+        pouch = Pouch(barrels=barrels)
 
         while not pouch.is_empty():
             barrel = pouch.get_barrel()
