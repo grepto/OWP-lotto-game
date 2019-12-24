@@ -4,7 +4,7 @@ from time import sleep
 from faker import Faker
 
 from config import BARRELS_NUMBER, CARDS_PER_PLAYER
-from helpers import blame_numbers, clear_terminal, create_parser
+from helpers import blame_numbers, clear_terminal, create_parser, hash_number_sequence
 
 if BARRELS_NUMBER < 15:
     raise ValueError('The BARRELS_NUMBER in config.py should 15 or more')
@@ -134,7 +134,7 @@ class Card:
     @classmethod
     def get_unique_number_sequence(cls):
         number_sequence = random.sample(barrels, 15)
-        while sorted(number_sequence) in cls.number_sequences_in_game:
+        while hash_number_sequence(number_sequence) in cls.number_sequences_in_game:
             number_sequence = random.sample(barrels, 15)
 
         return number_sequence
