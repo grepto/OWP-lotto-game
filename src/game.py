@@ -99,8 +99,8 @@ class HumanPlayer(Player):
     def check_barrel(self, barrel: int) -> bool:
         guess_str = input(f'{self.name}, do you have number {barrel} in you cards? (y/n) ').lower()
         if guess_str not in ('y', 'n'):
-            print(
-                f'{guess_str} is incorrect answer. You should type only "y" or "n". Lets try again')  # noqa: T001
+            print(                                                                     # noqa: T001
+                f'{guess_str} is incorrect answer. You should type only "y" or "n". Lets try again')
             self.check_barrel(barrel)
         else:
             guess = True if guess_str == 'y' else False
