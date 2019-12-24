@@ -111,9 +111,10 @@ class Card:
     """Lotto card class"""
 
     cards_in_game = set()
+    number_sequences_in_game = set()
 
     def __init__(self):
-        self._numbers = random.sample(barrels, 15)
+        self._numbers = Card.get_unique_number_sequence()
         while not Card.add_card_to_game(self):
             self._numbers = random.sample(barrels, 15)
 
@@ -129,6 +130,15 @@ class Card:
 
     def __hash__(self):
         return hash(tuple(sorted(self._numbers)))
+
+    @classmethod
+    def get_unique_number_sequence(cls):
+        number_sequence = random.sample(barrels, 15)
+        while sorted(number_sequence) in cls.number_sequences_in_game:
+            number_sequence = random.sample(barrels, 15)
+
+        return number_sequence
+
 
     @classmethod
     def add_card_to_game(cls, card):
