@@ -6,13 +6,14 @@ from faker import Faker
 from config import BARRELS_NUMBER, CARDS_PER_PLAYER
 from helpers import blame_numbers, clear_terminal, create_parser
 
+if BARRELS_NUMBER < 15:
+    raise ValueError('The BARRELS_NUMBER in config.py should 15 or more')
+
 fake = Faker()
 barrels = range(1, BARRELS_NUMBER + 1)
 
 
 class Game:
-    if BARRELS_NUMBER < 15:
-        raise ValueError('The BARRELS_NUMBER in config.py should 15 or more')
 
     @classmethod
     def start(cls, robot_numbers):
