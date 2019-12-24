@@ -1,7 +1,7 @@
-from subprocess import call
-from os import name
-import random
 import argparse
+import random
+from os import name
+from subprocess import call
 
 
 def clear_terminal():
