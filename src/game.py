@@ -13,53 +13,6 @@ fake = Faker()
 barrels = range(1, BARRELS_NUMBER + 1)
 
 
-class Game:
-
-    @classmethod
-    def start(cls, robot_numbers):
-        clear_terminal()
-        print('Welcome to the lotto game')  # noqa: T001
-        human_player_name = input('What is your name? ')
-
-        Player.add_player_to_game(HumanPlayer(human_player_name))
-
-        for _ in range(robot_numbers):
-            Player.add_player_to_game(RobotPlayer())
-
-        pouch = Pouch()
-
-        while not pouch.is_empty():
-            barrel = pouch.get_barrel()
-            clear_terminal()
-            print(f'Next barrel is {barrel}')  # noqa: T001
-
-            round_players = [player for player in Player.players if not player.is_looser]
-            for player in round_players:
-                clear_terminal()
-                player.print_cards()
-                player.check_barrel(barrel)
-
-                if player.is_looser:
-                    print('Sorry, you loose. Try again next time')  # noqa: T001
-                    sleep(1)
-                    break
-
-                if player.is_winner:
-                    print('Congradulationts! You win!')  # noqa: T001
-                    sleep(1)
-                    break
-
-                _ = input('\nPress Enter for the next step')
-
-            winner = Player.get_winner()
-            if winner:
-                clear_terminal()
-                print(f'The winner is {winner.name}')  # noqa: T001
-                winner.print_cards()
-
-                break
-
-
 class Player:
     players = []
 
@@ -146,7 +99,8 @@ class HumanPlayer(Player):
     def check_barrel(self, barrel: int) -> bool:
         guess_str = input(f'{self.name}, do you have number {barrel} in you cards? (y/n) ').lower()
         if guess_str not in ('y', 'n'):
-            print(f'{guess_str} is incorrect answer. You should type only "y" or "n". Lets try again')  # noqa: T001
+            print(
+                f'{guess_str} is incorrect answer. You should type only "y" or "n". Lets try again')  # noqa: T001
             self.check_barrel(barrel)
         else:
             guess = True if guess_str == 'y' else False
@@ -219,6 +173,53 @@ class Pouch:
 
     def is_empty(self):
         return len(self._barrels) == 0
+
+
+class Game:
+
+    @classmethod
+    def start(cls, robot_numbers):
+        clear_terminal()
+        print('Welcome to the lotto game')  # noqa: T001
+        human_player_name = input('What is your name? ')
+
+        Player.add_player_to_game(HumanPlayer(human_player_name))
+
+        for _ in range(robot_numbers):
+            Player.add_player_to_game(RobotPlayer())
+
+        pouch = Pouch()
+
+        while not pouch.is_empty():
+            barrel = pouch.get_barrel()
+            clear_terminal()
+            print(f'Next barrel is {barrel}')  # noqa: T001
+
+            round_players = [player for player in Player.players if not player.is_looser]
+            for player in round_players:
+                clear_terminal()
+                player.print_cards()
+                player.check_barrel(barrel)
+
+                if player.is_looser:
+                    print('Sorry, you loose. Try again next time')  # noqa: T001
+                    sleep(1)
+                    break
+
+                if player.is_winner:
+                    print('Congradulationts! You win!')  # noqa: T001
+                    sleep(1)
+                    break
+
+                _ = input('\nPress Enter for the next step')
+
+            winner = Player.get_winner()
+            if winner:
+                clear_terminal()
+                print(f'The winner is {winner.name}')  # noqa: T001
+                winner.print_cards()
+
+                break
 
 
 if __name__ == '__main__':
