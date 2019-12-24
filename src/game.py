@@ -147,9 +147,6 @@ class Game:
 
     def __init__(self, barrels_number, cards_per_player, robots_number):
 
-        if barrels_number not in range(15, 91):
-            raise ValueError('The barrels number in should be between 15 and 90')
-
         self.cards = set()
         self.players = []
         self.pouch = Pouch(range(1, barrels_number + 1))
