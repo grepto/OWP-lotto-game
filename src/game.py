@@ -231,9 +231,4 @@ if __name__ == '__main__':
         cards_per_player=args.cards_per_player,
         robots_number=args.robots_number
     )
-    # game = Game(
-    #     barrels_number=90,
-    #     cards_per_player=1,
-    #     robots_number=1
-    # )
     game.start()
