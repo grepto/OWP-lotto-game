@@ -105,7 +105,6 @@ class Card:
     def __hash__(self):
         return hash(tuple(sorted(self.numbers)))
 
-
     @property
     def numbers(self):
         return [number for number in self._numbers if isinstance(number, int)]
