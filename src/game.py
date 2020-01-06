@@ -3,7 +3,7 @@ from time import sleep
 
 from faker import Faker
 
-from helpers import blame_numbers, clear_terminal, create_parser
+from .helpers import blame_numbers, clear_terminal, create_parser
 
 fake = Faker()
 
@@ -112,6 +112,9 @@ class Card:
     @property
     def is_empty(self):
         return len(self.numbers) == 0
+
+    def _clear_numbers(self):
+        self._numbers = []
 
     def check_number(self, barrel):
         return barrel in self._numbers
